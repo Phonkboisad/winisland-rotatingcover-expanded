@@ -287,7 +287,7 @@ dependencies = [
 
 [[package]]
 name = "expanded_rotating_cd"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "winisland-plugin-api",
 ]

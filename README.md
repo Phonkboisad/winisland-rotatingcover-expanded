@@ -16,7 +16,7 @@ cargo test --locked
 cargo run --locked --example pack
 ```
 
-Drop `target\Expanded Rotating CD-0.1.0.zip` onto the running island to install it. The separate package ID is `expanded-rotating-cd`, so it can be enabled alongside the compact Rotating CD plugin.
+Drop the generated `target\Expanded Rotating CD-0.1.1.zip` onto the running island to install it. The separate package ID is `expanded-rotating-cd`, so it can be enabled alongside the compact Rotating CD plugin.
 
 ## Behavior check
 
@@ -27,7 +27,7 @@ Drop `target\Expanded Rotating CD-0.1.0.zip` onto the running island to install 
 
 ## Release
 
-This plugin is intended for the public repository [`phonkboisad/winisland-rotatingcover-expanded`](https://github.com/phonkboisad/winisland-rotatingcover-expanded). Push a version tag matching `Cargo.toml` (currently `v0.1.0`) to run `.github/workflows/release.yml`. The pinned official PluginMarketplace workflow checks, packages, attests, and publishes a `*.winisland-plugin.zip` asset to a GitHub Release. Never replace an asset for an existing version; increment `version` in `Cargo.toml` and publish a new tag.
+This plugin is intended for the public repository [`phonkboisad/winisland-rotatingcover-expanded`](https://github.com/phonkboisad/winisland-rotatingcover-expanded). Push a version tag matching `Cargo.toml` (currently `v0.1.1`) to run `.github/workflows/release.yml`. The pinned official PluginMarketplace workflow checks, packages, attests, and publishes a `*.winisland-plugin.zip` asset to a GitHub Release. Never replace an asset for an existing version; increment `version` in `Cargo.toml` and publish a new tag.
 
 ## Marketplace submission
 

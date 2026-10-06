@@ -13,7 +13,7 @@ use winisland_plugin_api::{PluginMetadataC, PluginToken, SurfaceSpecV2, WidgetId
 const PLUGIN_ID: &str = "expanded-rotating-cd";
 const PLUGIN_NAME: &str = "Expanded Rotating CD";
 const PLUGIN_AUTHOR: &str = "phonkboisad";
-const PLUGIN_DESCRIPTION: &str = "A spinning CD overlay for the expanded music view";
+const PLUGIN_DESCRIPTION: &str = "A spinning CD overlay for WinIsland's expanded music view";
 const MUSIC_PAGE: u64 = 1;
 const ROTATION_SECONDS: f64 = 2.5;
 const EXPANDED_COVER_INSET: f32 = 24.0;
@@ -456,6 +456,10 @@ mod tests {
         assert_eq!(
             &DESCRIPTOR.metadata.id[..PLUGIN_ID.len()],
             PLUGIN_ID.as_bytes()
+        );
+        assert_eq!(
+            &DESCRIPTOR.metadata.description[..PLUGIN_DESCRIPTION.len()],
+            PLUGIN_DESCRIPTION.as_bytes()
         );
         assert_eq!(DESCRIPTOR.capabilities & CAP_EVENTS, CAP_EVENTS);
         assert_eq!(DESCRIPTOR.capabilities & CAP_IMAGE, CAP_IMAGE);
