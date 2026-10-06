@@ -1,0 +1,30 @@
+[package]
+name = "expanded_rotating_cd"
+version = "0.1.0"
+edition = "2024"
+authors = ["phonkboisad"]
+description = "A spinning CD overlay for WinIsland's expanded music view"
+license = "MIT"
+repository = "https://github.com/phonkboisad/winisland-rotatingcover-expanded"
+
+[lib]
+name = "expanded_rotating_cd"
+crate-type = ["cdylib", "rlib"]
+
+[profile.release]
+lto = true
+codegen-units = 1
+
+[dependencies]
+winisland-plugin-api = "0.11"
+
+[package.metadata.winisland]
+id = "expanded-rotating-cd"
+name = "Expanded Rotating CD"
+
+[dev-dependencies]
+winisland-plugin-api = { version = "0.11", features = ["packager"] }
+
+[[example]]
+name = "pack"
+path = "examples/pack.rs"
