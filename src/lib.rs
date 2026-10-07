@@ -22,6 +22,8 @@ const DISC_OVERHANG: f32 = 8.0;
 
 struct RenderState {
     cover: Option<ImageHandle>,
+    media_title: String,
+    media_artist: String,
     has_media: bool,
     playing: bool,
     expanded: bool,
@@ -109,6 +111,8 @@ fn create_instance(host: Host) -> Result<Instance, Error> {
     })?);
     let state = Arc::new(Mutex::new(RenderState {
         cover,
+        media_title: fixed_text(&host_state.media_title),
+        media_artist: fixed_text(&host_state.media_artist),
         has_media,
         playing: host_state.is_playing != 0,
         expanded: island.expanded != 0,
@@ -131,16 +135,26 @@ fn create_instance(host: Host) -> Result<Instance, Error> {
                 let mut render = state_render
                     .lock()
                     .unwrap_or_else(|poisoned| poisoned.into_inner());
+                let media_title = fixed_text(&host_state.media_title);
+                let media_artist = fixed_text(&host_state.media_artist);
+                let media_changed =
+                    render.media_title != media_title || render.media_artist != media_artist;
+                render.media_title = media_title;
+                render.media_artist = media_artist;
                 render.has_media = host_state.media_title[0] != 0;
                 render.playing = host_state.is_playing != 0;
                 render.expanded = island.expanded != 0;
                 render.music_page = island.page == MUSIC_PAGE;
-                if should_refresh_cover(event.kind) {
+                if should_refresh_cover(event.kind) || media_changed {
+                    drop(render.cover.take());
                     render.cover = if render.has_media {
                         album_art(&state_host)?
                     } else {
                         None
                     };
+                    if media_changed {
+                        render.angle = 0.0;
+                    }
                 }
                 drop(render);
                 set_animation(&state_host, state_surface.id(), &state_render)?;
@@ -229,8 +243,8 @@ fn set_animation(host: &Host, target: WidgetId, state: &Mutex<RenderState>) -> R
 }
 
 fn draw_overlay(host: &Host, surface: &Surface, state: &Mutex<RenderState>) -> Result<(), Error> {
-    let (width, height) = surface.logical_size();
     let island = host.events()?.island_state()?;
+    let (width, height) = logical_canvas_size(surface, island.width, island.height, island.scale);
     let state = state
         .lock()
         .unwrap_or_else(|poisoned| poisoned.into_inner());
@@ -246,6 +260,32 @@ fn draw_overlay(host: &Host, surface: &Surface, state: &Mutex<RenderState>) -> R
         draw_disc(&mut frame, cover, x, y, diameter, state.angle);
     }
     surface.submit(frame.finish())
+}
+
+fn logical_canvas_size(
+    surface: &Surface,
+    island_width: f32,
+    island_height: f32,
+    island_scale: f32,
+) -> (f32, f32) {
+    let (surface_width, surface_height) = surface.logical_size();
+    if surface_width > 1.0
+        && surface_height > 1.0
+        && surface_width.is_finite()
+        && surface_height.is_finite()
+    {
+        return (surface_width, surface_height);
+    }
+    if island_width.is_finite()
+        && island_height.is_finite()
+        && island_scale.is_finite()
+        && island_width > 0.0
+        && island_height > 0.0
+        && island_scale > 0.0
+    {
+        return (island_width / island_scale, island_height / island_scale);
+    }
+    (surface_width, surface_height)
 }
 
 fn disc_geometry(
@@ -398,6 +438,10 @@ unsafe extern "C" fn on_tick(
 fn advance_angle(angle: f32, dt_seconds: f64) -> f32 {
     (angle + (dt_seconds.rem_euclid(ROTATION_SECONDS) * 360.0 / ROTATION_SECONDS) as f32)
         .rem_euclid(360.0)
+}
+
+fn fixed_text(value: &[u8]) -> String {
+    String::from_utf8_lossy(value.split(|byte| *byte == 0).next().unwrap_or(value)).into_owned()
 }
 
 fn should_draw(has_media: bool, expanded: bool, music_page: bool, has_cover: bool) -> bool {

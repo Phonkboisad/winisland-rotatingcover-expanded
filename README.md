@@ -4,6 +4,8 @@ An independent WinIsland ABI v2 plugin that turns the expanded music view's albu
 
 The disc overlays the native expanded album cover and slightly exceeds its bounds so the native square corners remain hidden behind a circular crop. It uses WinIsland's foreground surface and album-art API, keeping the native expanded track information and controls intact. If the host has not supplied album art, the plugin leaves the native cover visible.
 
+The foreground surface renders only the circular disc, without a rectangular background. When the active track changes, the plugin releases the previous image handle, loads the current album art, resets the disc angle, and redraws immediately.
+
 ## Build and install
 
 From this directory, run:
@@ -16,7 +18,7 @@ cargo test --locked
 cargo run --locked --example pack
 ```
 
-Drop the generated `target\Expanded Rotating CD-0.1.1.zip` onto the running island to install it. The separate package ID is `expanded-rotating-cd`, so it can be enabled alongside the compact Rotating CD plugin.
+Drop the generated `target\Expanded Rotating CD-0.1.3.zip` onto the running island to install it. The separate package ID is `expanded-rotating-cd`, so it can be enabled alongside the compact Rotating CD plugin.
 
 ## Behavior check
 
@@ -27,7 +29,7 @@ Drop the generated `target\Expanded Rotating CD-0.1.1.zip` onto the running isla
 
 ## Release
 
-This plugin is intended for the public repository [`phonkboisad/winisland-rotatingcover-expanded`](https://github.com/phonkboisad/winisland-rotatingcover-expanded). Push a version tag matching `Cargo.toml` (currently `v0.1.1`) to run `.github/workflows/release.yml`. The pinned official PluginMarketplace workflow checks, packages, attests, and publishes a `*.winisland-plugin.zip` asset to a GitHub Release. Never replace an asset for an existing version; increment `version` in `Cargo.toml` and publish a new tag.
+This plugin is intended for the public repository [`phonkboisad/winisland-rotatingcover-expanded`](https://github.com/phonkboisad/winisland-rotatingcover-expanded). Push a version tag matching `Cargo.toml` (currently `v0.1.3`) to run `.github/workflows/release.yml`. The pinned official PluginMarketplace workflow checks, packages, attests, and publishes a `*.winisland-plugin.zip` asset to a GitHub Release. Never replace an asset for an existing version; increment `version` in `Cargo.toml` and publish a new tag.
 
 ## Marketplace submission
 
